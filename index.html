@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Blog</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group textarea, .form-group button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        .form-group button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .form-group button:hover {
+            background-color: #0056b3;
+        }
+        .blog-posts {
+            margin-top: 20px;
+        }
+        .blog-post {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .blog-post .actions {
+            margin-top: 10px;
+        }
+        .actions button {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .actions button.edit-btn {
+            background: #007BFF;
+        }
+        .actions button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simple Blog</h1>
+        <div class="form-group">
+            <textarea id="blogContent" rows="4" placeholder="Write your blog post here..."></textarea>
+            <button onclick="addPost()">Add Post</button>
+        </div>
+        <div class="blog-posts" id="blogPosts">
+            <!-- Blog posts will appear here -->
+        </div>
+    </div>
+
+    <script>
+        const blogPosts = document.getElementById('blogPosts');
+        let posts = [];
+
+        // Add a new post
+        function addPost() {
+            const content = document.getElementById('blogContent').value;
+            if (content.trim() === "") {
+                alert("Blog content cannot be empty.");
+                return;
+            }
+
+            const postId = Date.now();
+            posts.push({ id: postId, content });
+
+            renderPosts();
+            document.getElementById('blogContent').value = ''; // Clear input field
+        }
+
+        // Render posts to the DOM
+        function renderPosts() {
+            blogPosts.innerHTML = '';
+            posts.forEach(post => {
+                const postDiv = document.createElement('div');
+                postDiv.className = 'blog-post';
+                postDiv.innerHTML = `
+                    <p>${post.content}</p>
+                    <div class="actions">
+                        <button class="edit-btn" onclick="editPost(${post.id})">Edit</button>
+                        <button onclick="deletePost(${post.id})">Delete</button>
+                    </div>
+                `;
+                blogPosts.appendChild(postDiv);
+            });
+        }
+
+        // Edit a post
+        function editPost(id) {
+            const post = posts.find(p => p.id === id);
+            if (post) {
+                const newContent = prompt("Edit your post:", post.content);
+                if (newContent !== null && newContent.trim() !== "") {
+                    post.content = newContent;
+                    renderPosts();
+                }
+            }
+        }
+
+        // Delete a post
+        function deletePost(id) {
+            posts = posts.filter(post => post.id !== id);
+            renderPosts();
+        }
+    </script>
+</body>
+</html>
